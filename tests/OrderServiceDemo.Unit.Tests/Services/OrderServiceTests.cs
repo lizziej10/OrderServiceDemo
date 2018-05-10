@@ -90,17 +90,6 @@ namespace OrderServiceDemo.Unit.Tests.Services
 			Order orderToModify = new Order();
 			orderToModify.OrderId = 1234;
 			orderToModify.OrderStatus = OrderStatus.Open;
-			List<OrderLineItem> lineItems = new List<OrderLineItem>();
-            OrderLineItem lineItem = new OrderLineItem();
-            lineItem.OrderId = 1234;
-            lineItem.ProductId = 4321;
-            lineItem.Quantity = 1;
-            lineItem.ItemPrice = 4;
-            lineItems.Add(lineItem);
-
-            orderToModify.OrderLineItems = lineItems;
-
-			string output = JsonConvert.SerializeObject(orderToModify);
             
 			return orderToModify;
 		}
