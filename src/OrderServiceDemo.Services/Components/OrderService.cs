@@ -4,6 +4,7 @@ using OrderServiceDemo.Models;
 using OrderServiceDemo.Models.Exceptions;
 using OrderServiceDemo.Services.Infrastructure;
 using OrderServiceDemo.Services.Interfaces;
+using OrderServiceDemo.Core;
 
 namespace OrderServiceDemo.Services.Components
 {
@@ -44,18 +45,33 @@ namespace OrderServiceDemo.Services.Components
             return order;
         }
 
-        public Task<Order> CancelOrder(int orderId)
+		public async Task<Order> CancelOrder(int orderId)
         {
-            //TODO: Add service implementation. Throw exception if the indicated order does not exist or has already been cancelled.
-            //TODO: Add Unit tests for this service method.
-            throw new System.NotImplementedException();
+			//TODO: Add service implementation. Throw exception if the indicated order does not exist or has already been cancelled.
+			//TODO: Add Unit tests for this service method.
+			Order order =  await _orderRepository.GetOrder(orderId);
+
+			if(order == null || order.OrderStatus == OrderStatus.Cancelled) {
+				throw new Models.Exceptions.InvalidRequestException("Order does not exist or is already cancelled");
+			}
+			order.OrderStatus = OrderStatus.Cancelled;
+
+			await _orderRepository.UpdateOrder(order);
+			return order;
         }
 
-        public Task<Order> DeleteOrder(int orderId)
+		public async Task<Order> DeleteOrder(int orderId)
         {
-            //TODO: Add service implementation. Throw exception if the indicated order does not exist.
-            //TODO: Add Unit tests for this service method.
-            throw new System.NotImplementedException();
+			//TODO: Add service implementation. Throw exception if the indicated order does not exist.
+			//TODO: Add Unit tests for this service method.
+			Order order = await _orderRepository.GetOrder(orderId);
+			if (order == null)
+            {
+				throw new Models.Exceptions.InvalidRequestException("Order does not exist");
+            }
+			await _orderRepository.DeleteOrder(order);
+			await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
+			return order;
         }
 
         private async Task<Order> BuildUpOrder(Order order)

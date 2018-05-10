@@ -51,18 +51,36 @@ namespace OrderServiceDemo.Controllers
 
         [HttpPost]
         [Route("v1/orders/{orderId:int}/cancel")]
-        public Task<Order> CancelOrder(int orderId)
+		public async Task<Order> CancelOrder(int orderId)
         {
             //TODO: Add controller implementation.
-            return Task.FromException<Order>(BuildExceptionResponse(HttpStatusCode.NotImplemented, new NotImplementedException()));
+            try
+            {
+				var cancelledOrder = await _orderService.CancelOrder(orderId);
+				var response = _mapper.Map<Order>(cancelledOrder);
+                return response;
+            }
+            catch (InvalidRequestException ex)
+            {
+                throw BuildExceptionResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
 
         [HttpDelete]
         [Route("v1/orders/{orderId:int}")]
-        public Task<Order> DeleteOrder(int orderId)
+        public async Task<Order> DeleteOrder(int orderId)
         {
             //TODO: Add controller implementation.
-            return Task.FromException<Order>(BuildExceptionResponse(HttpStatusCode.NotImplemented, new NotImplementedException()));
+			try
+            {
+				var deletedOrder = await _orderService.DeleteOrder(orderId);
+				var response = _mapper.Map<Order>(deletedOrder);
+                return response;
+            }
+            catch (InvalidRequestException ex)
+            {
+                throw BuildExceptionResponse(HttpStatusCode.BadRequest, ex);
+            }
         }
     }
 }

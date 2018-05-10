@@ -43,6 +43,40 @@ namespace OrderServiceDemo.Unit.Tests.Controllers
             Assert.Equal((int)System.Net.HttpStatusCode.BadRequest, result.StatusCode);
         }
 
+		[Fact]
+        public async Task OrderController_WhenCancellingOrder_IfInvalidRequest_ShouldReturn_HttpBadReqest()
+        {
+            //Arrange
+            _orderSerivce
+				.CancelOrder(Arg.Any<int>())
+                .Returns(Task.FromException<Models.Order>(new InvalidRequestException("The Message")));
+
+            var controller = BuildController();
+
+            //Act
+			var result = await Assert.ThrowsAsync<StatusCodeException>(() => controller.CancelOrder(1234));
+
+            //Assert
+            Assert.Equal((int)System.Net.HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+		[Fact]
+        public async Task OrderController_WhenDeletingOrder_IfInvalidRequest_ShouldReturn_HttpBadReqest()
+        {
+            //Arrange
+            _orderSerivce
+				.DeleteOrder(Arg.Any<int>())
+                .Returns(Task.FromException<Models.Order>(new InvalidRequestException("The Message")));
+
+            var controller = BuildController();
+
+            //Act
+			var result = await Assert.ThrowsAsync<StatusCodeException>(() => controller.DeleteOrder(1234));
+
+            //Assert
+            Assert.Equal((int)System.Net.HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
         private OrderController BuildController() => new OrderController(
             _mapper, 
             _orderSerivce);
