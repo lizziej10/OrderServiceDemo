@@ -69,8 +69,8 @@ namespace OrderServiceDemo.Services.Components
             {
 				throw new Models.Exceptions.InvalidRequestException("Order does not exist");
             }
-			await _orderRepository.DeleteOrder(order);
 			await _orderLineItemRepository.DeleteAllLineItemsInOrder(orderId);
+			await _orderRepository.DeleteOrder(order);
 			return order;
         }
 
